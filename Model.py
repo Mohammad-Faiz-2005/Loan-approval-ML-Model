@@ -18,7 +18,7 @@ import streamlit as st
 
 st.title("Loan Approval Model Using Machine Learning")
 
-dataset = pd.read_csv(r"C:\Users\Mohammad Faiz\Downloads\dataset for datascience\loan.csv")
+dataset = pd.read_csv("loan.csv")
 df = pd.DataFrame(dataset)
 
 df.drop(columns = ["Loan_ID"] , inplace = True)
