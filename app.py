@@ -6,6 +6,7 @@ st.title("Loan Approval Prediction App")
 
 # Load trained model
 model = joblib.load("model.pkl")
+encoder = joblib.load("encoder.pkl")
 
 Gender = st.radio("Gender", ["Male", "Female"])
 Gender = 1 if Gender == "Male" else 0
@@ -32,10 +33,28 @@ Credit_History = 1 if Credit_History == "Yes" else 0
 
 Property_Area = st.radio("Property Area", ["Rural", "Semiurban", "Urban"])
 Property_Area = {"Rural": 0, "Semiurban": 1, "Urban": 2}[Property_Area]
+import pandas as pd
 
-input_data = np.array([[Gender, Married, Dependents, Education, Self_Employed,
-                        ApplicantIncome, CoapplicantIncome, LoanAmount,
-                        Loan_Amount_Term, Credit_History, Property_Area]])
+input_df = pd.DataFrame([{
+    "Gender": Gender,
+    "Married": Married,
+    "Dependents": Dependents,
+    "Education": Education,
+    "Self_Employed": Self_Employed,
+    "ApplicantIncome": ApplicantIncome,
+    "CoapplicantIncome": CoapplicantIncome,
+    "LoanAmount": LoanAmount,
+    "Loan_Amount_Term": Loan_Amount_Term,
+    "Credit_History": Credit_History,
+    "Property_Area": Property_Area
+}])
+
+# Encode categorical columns (same as training)
+cat_cols = ["Gender", "Married", "Education", "Self_Employed", "Property_Area"]
+input_df[cat_cols] = encoder.transform(input_df[cat_cols])
+
+result = model.predict(input_df)
+
 
 if st.button("Predict"):
     result = model.predict(input_data)
